@@ -2,16 +2,19 @@
     <div id="hottop">
         <!-- {{ hottopData }} -->
         <div class="box">
-            <div class="name">
-                <h2>今日热搜榜</h2>
-            </div>
-            <div class="bar" v-for="item in hottopData" :key="item.index">
-                <div class="ind">{{item.index}}</div>
-                <div class="content"><a :href="item.url">{{ item.title }}</a></div>
-                <div class="num">
-                    <img src="@/assets/hot.png" alt="hot" width="20px" height="20px">
-                    {{ item.hot }}
+            <div :style="{ height: '300vh', padding: '10px' }">
+                <div class="name">
+                    <h2>今日热搜榜</h2>
                 </div>
+                <div class="bar" v-for="item in hottopData" :key="item.index">
+                    <div class="ind">{{item.index}}</div>
+                    <div class="content"><a :href="item.url">{{ item.title }}</a></div>
+                    <div class="num">
+                        <img src="@/assets/hot.png" alt="hot" width="20px" height="20px">
+                        {{ item.hot }}
+                    </div>
+                </div>
+                <a-back-top style="position: fixed; right: 440px;"/>
             </div>
         </div>
     </div>

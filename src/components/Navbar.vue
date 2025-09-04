@@ -86,7 +86,7 @@ const items = ref([
   flex: 8;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 352px;
+  min-width: 200px;
   padding-left: 20px;
 }
 .btn3{
