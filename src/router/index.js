@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import HotTop from '@/views/hottop/HotTop.vue'
 import Dujitang from '@/views/dujitang/Dujitang.vue'
+import Weather from '@/views/weather/Weather.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     name: 'hottop',
     component: HotTop
   },
+  {
+    path:'/weather',
+    name:'weather',
+    component:Weather
+  }
 ]
 
 const router = createRouter({
