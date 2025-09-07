@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "123456",
+      "name": "管理员"
+    },
+    {
+      "id": "2",
+      "username": "zhangsan",
+      "password": "1002",
+      "name": "张三"
+    }
+  ]
+}

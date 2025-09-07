@@ -7,7 +7,7 @@
         <div flex="auto" class="menu2">
           <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="menubar" @click="menuClick"/>
         </div>
-        <div flex="100px" class="btn3"><a-button type="primary">登录</a-button></div>
+        <div flex="100px" class="btn3"><a-button type="primary" @click="clickLogin">登录</a-button></div>
     </div>  
 </template>
 <script setup>
@@ -23,7 +23,21 @@ const menuClick = ({ item, key, keyPath })=>{
       path: key
     })
  }
+
+//点击登录按钮,跳转登录页面
+const clickLogin = ()=>{
+  router.push('/login');
+}
+
+
+
 const current = ref(['/']);
+
+//每次刷新导航条根据当前路由高亮
+router.afterEach((to,form,next)=>{
+  current.value = [to.path];
+})
+
 const items = ref([
   {
     key: '/',

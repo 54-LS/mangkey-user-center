@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import HotTop from '@/views/hottop/HotTop.vue'
 import Dujitang from '@/views/dujitang/Dujitang.vue'
 import Weather from '@/views/weather/Weather.vue'
+import Login from '@/views/login/Login.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path:'/weather',
     name:'weather',
     component:Weather
+  },
+  {
+    path:'/login',
+    name:'login',
+    component:Login
   }
 ]
 
