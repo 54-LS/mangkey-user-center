@@ -3,17 +3,17 @@ import { ref, computed } from 'vue'
 import { loginApi } from '@/api/auth' // 假设有一个登录的API函数
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref(localStorage.getItem('token'))
+  const token = ref(sessionStorage.getItem('token'))
   const isAuthenticated = computed(() => !!token.value)
 
   function setToken(newToken) {
     token.value = newToken
-    localStorage.setItem('token', newToken)
+    sessionStorage.setItem('token', newToken)
   }
 
   function clearToken() {
     token.value = null
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
   }
 
   async function login(credentials) {

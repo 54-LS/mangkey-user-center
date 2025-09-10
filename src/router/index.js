@@ -4,7 +4,6 @@ import HotTop from '@/views/hottop/HotTop.vue'
 import Dujitang from '@/views/dujitang/Dujitang.vue'
 import Weather from '@/views/weather/Weather.vue'
 import Login from '@/views/login/Login.vue'
-import { useAuthStore } from '@/stores/auth'
 
 const routes = [
   {
@@ -47,17 +46,17 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   // 重点检查这里的判断逻辑！
-  const isLoggedIn = !!localStorage.getItem('token') // 确保能正确读取到 token
+  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true'
   
   console.log('导航守卫检查:', {
     to: to.path,
     requiresAuth,
     isLoggedIn, // 关键：登录后这里是否为 true？
-    token: localStorage.getItem('token') // 查看 token 是否存在
+    token: sessionStorage.getItem('isLoggedIn') // 查看 token 是否存在
   })
   
   if (requiresAuth && !isLoggedIn) {
-    localStorage.setItem('redirectPath', to.fullPath)
+    sessionStorage.setItem('redirectPath', to.fullPath)
     next('/login') // 如果登录后这里仍进入，说明 isLoggedIn 为 false
   } else {
     next()

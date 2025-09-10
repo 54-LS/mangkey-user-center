@@ -27,6 +27,7 @@
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import router from '@/router';
+import { ref } from 'vue';
 
 export default {
   name: 'Login',
@@ -39,7 +40,7 @@ export default {
   },
   // 页面加载时检查是否已经登录过
   created() {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
+    if (sessionStorage.getItem('isLoggedIn') === 'true') {
       this.isLoggedIn = true;
     }
   },
@@ -53,42 +54,69 @@ export default {
             password: this.password
           }
         });
-        // 关键：确认接口返回了 token，且正确存储
-    console.log('登录接口返回的 token:', response.token) // 检查是否有值
-    localStorage.setItem('token', response.token) // 存储
-    console.log('存储后的 token:', localStorage.getItem('token')) // 检查是否能读取到
+    //     // 关键：确认接口返回了 token，且正确存储
+    //     console.log('............',response)
+    // console.log('登录接口返回的 token:', response.data.token) // 检查是否有值
+    // sessionStorage.setItem('token', response.token) // 存储
+    // console.log('存储后的 token:', sessionStorage.getItem('token')) // 检查是否能读取到
     
-    const redirectPath = localStorage.getItem('redirectPath') || '/dujitang'
-    console.log('准备跳转:', redirectPath)
-    router.push(redirectPath)
-         // 3. 判断返回的数组是否有一条数据（说明用户存在）
-        if (response.data.length === 1) {
-          const user = response.data[0].token;
-          this.isLoggedIn = true;
-          localStorage.setItem('isLoggedIn', 'true');
-          localStorage.setItem('username', user.username);
-          localStorage.setItem('name', user.name); // 可以存更多信息
-          message.success(`欢迎回来，${user.name}！`);
-          // // 登录成功，跳转到首页或之前尝试访问的页面
-          // const redirect = router.currentRoute.value.query.redirect
-          // router.push(redirect)
-          // 获取之前记录的路径，如果没有则使用默认路径
-          const redirectPath = localStorage.getItem('redirectPath') || '/'
+    // const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
+    // console.log('准备跳转:', redirectPath)
+    // router.push(redirectPath)
+    //      // 3. 判断返回的数组是否有一条数据（说明用户存在）
+    //     if (response.data.length === 1) {
+    //       const user = response.data[0].token;
+    //       this.isLoggedIn = true;
+    //       sessionStorage.setItem('isLoggedIn', 'true');
+    //       sessionStorage.setItem('username', user.username);
+    //       sessionStorage.setItem('name', user.name); // 可以存更多信息
+    //       message.success(`欢迎回来，${user.name}！`);
+    //       // // 登录成功，跳转到首页或之前尝试访问的页面
+    //       // const redirect = router.currentRoute.value.query.redirect
+    //       // router.push(redirect)
+    //       // 获取之前记录的路径，如果没有则使用默认路径
+    //       const redirectPath = sessionStorage.getItem('redirectPath') || '/'
           
-          // 清除记录的路径
-          localStorage.removeItem('redirectPath')
-          console.log('当前路径：',redirectPath)
-          // // 跳转到目标路径
-          router.push(redirectPath)
-        } else {
-          this.username = '';
-          this.password = '';
-          message.error('用户名或密码错误！');
-        }
+    //       // 清除记录的路径
+    //       sessionStorage.removeItem('redirectPath')
+    //       console.log('当前路径：',redirectPath)
+    //       // // 跳转到目标路径
+    //       router.push(redirectPath)
+    //     } else {
+    //       this.username = '';
+    //       this.password = '';
+    //       message.error('用户名或密码错误！');
+    //     }
+
+    if (response.data.length > 0) {
+      // 登录成功：存储状态（关键步骤）
+      // 1. 存储登录标识（键名必须与导航守卫中一致）
+      sessionStorage.setItem('isLoggedIn', 'true') 
+      // 2. 存储用户信息（可选，用于页面显示）
+      sessionStorage.setItem('currentUser', JSON.stringify(response.data[0]))
+
+      // 打印调试：确认存储成功
+      console.log('登录后存储的状态:', {
+        isLoggedIn: sessionStorage.getItem('isLoggedIn'),
+        currentUser: sessionStorage.getItem('currentUser')
+      })
+      // 获取当前用户信息
+      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
+      console.log('当前用户信息：',currentUser)
+      // 跳转逻辑
+      const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
+      sessionStorage.removeItem('redirectPath')
+      router.push(redirectPath)
+      message.success(`欢迎回来，${currentUser.name}！`);
+    } else {
+        this.username = '';
+        this.password = '';
+        message.error('用户名或密码错误！');
+    }
 
       } catch (error) {
-        // console.error('登录请求失败：', error);
-        // alert('网络请求失败，请稍后重试');
+        console.error('登录请求失败：', error);
+        alert('网络请求失败，请稍后重试');
       }
     },
     confirm(){

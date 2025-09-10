@@ -1,5 +1,6 @@
 import instance from "@/network/request"
 
+//登录api
 export const loginApi = (credentials) => {
   // 根据JSON Server的规则，我们可以通过GET请求/users?username=xxx&password=xxx来查找用户
   // 注意：在实际应用中，密码不会以明文方式传输，也不会以明文形式存储在数据库中。这里仅为演示。
