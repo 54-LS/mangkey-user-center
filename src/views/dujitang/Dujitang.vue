@@ -17,10 +17,21 @@
 <script setup>
 import { getDujitang } from '@/network/hottop';
 import { reactive, ref } from 'vue';
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 //存储鸡汤数据
 const jitangData = reactive([])
 
+const router = useRouter()
+
+onMounted(() => {
+  // 检查是否有额外的权限验证逻辑，如果有，确保正确实现
+  const token = localStorage.getItem('token')
+  if (!token) {
+    router.push('/login')
+  }
+})
 //点击按钮获取鸡汤
 const getwords = ()=>{
     getDujitang().then(res=>{

@@ -30,7 +30,6 @@ const hottopData = ref([]);
 //获取热搜数据
 getHotTop().then(res=>{
     hottopData.value = res.data.data;
-    console.log(hottopData.value);
 })
 
 </script>

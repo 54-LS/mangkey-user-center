@@ -26,6 +26,7 @@
 <script>
 import { message } from 'ant-design-vue';
 import axios from 'axios';
+import router from '@/router';
 
 export default {
   name: 'Login',
@@ -33,7 +34,7 @@ export default {
     return {
       username: '',
       password: '',
-      isLoggedIn: false
+      isLoggedIn: false,
     }
   },
   // 页面加载时检查是否已经登录过
@@ -52,24 +53,42 @@ export default {
             password: this.password
           }
         });
-        console.log(response.data)
+        // 关键：确认接口返回了 token，且正确存储
+    console.log('登录接口返回的 token:', response.token) // 检查是否有值
+    localStorage.setItem('token', response.token) // 存储
+    console.log('存储后的 token:', localStorage.getItem('token')) // 检查是否能读取到
+    
+    const redirectPath = localStorage.getItem('redirectPath') || '/dujitang'
+    console.log('准备跳转:', redirectPath)
+    router.push(redirectPath)
          // 3. 判断返回的数组是否有一条数据（说明用户存在）
         if (response.data.length === 1) {
-          const user = response.data[0];
+          const user = response.data[0].token;
           this.isLoggedIn = true;
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', user.username);
           localStorage.setItem('name', user.name); // 可以存更多信息
           message.success(`欢迎回来，${user.name}！`);
-          this.$router.push('/');
+          // // 登录成功，跳转到首页或之前尝试访问的页面
+          // const redirect = router.currentRoute.value.query.redirect
+          // router.push(redirect)
+          // 获取之前记录的路径，如果没有则使用默认路径
+          const redirectPath = localStorage.getItem('redirectPath') || '/'
+          
+          // 清除记录的路径
+          localStorage.removeItem('redirectPath')
+          console.log('当前路径：',redirectPath)
+          // // 跳转到目标路径
+          router.push(redirectPath)
         } else {
           this.username = '';
           this.password = '';
           message.error('用户名或密码错误！');
         }
+
       } catch (error) {
-        console.error('登录请求失败：', error);
-        alert('网络请求失败，请稍后重试');
+        // console.error('登录请求失败：', error);
+        // alert('网络请求失败，请稍后重试');
       }
     },
     confirm(){

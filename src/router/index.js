@@ -4,38 +4,64 @@ import HotTop from '@/views/hottop/HotTop.vue'
 import Dujitang from '@/views/dujitang/Dujitang.vue'
 import Weather from '@/views/weather/Weather.vue'
 import Login from '@/views/login/Login.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
   },
   {
     path: '/dujitang',
     name: 'dujitang',
-    component: Dujitang
+    component: Dujitang,
+    meta: { requiresAuth: true }  //需要验证登录的页面
   },
   {
     path: '/hottop',
     name: 'hottop',
-    component: HotTop
+    component: HotTop,
+    meta: { requiresAuth: true }  //需要验证登录的页面
   },
   {
     path:'/weather',
     name:'weather',
-    component:Weather
+    component:Weather,
+    meta: { requiresAuth: true }  //需要验证登录的页面
   },
   {
     path:'/login',
     name:'login',
-    component:Login
+    component:Login,
+
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
+})
+
+// router/index.js 中导航守卫的关键逻辑
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  // 重点检查这里的判断逻辑！
+  const isLoggedIn = !!localStorage.getItem('token') // 确保能正确读取到 token
+  
+  console.log('导航守卫检查:', {
+    to: to.path,
+    requiresAuth,
+    isLoggedIn, // 关键：登录后这里是否为 true？
+    token: localStorage.getItem('token') // 查看 token 是否存在
+  })
+  
+  if (requiresAuth && !isLoggedIn) {
+    localStorage.setItem('redirectPath', to.fullPath)
+    next('/login') // 如果登录后这里仍进入，说明 isLoggedIn 为 false
+  } else {
+    next()
+  }
 })
 
 export default router
