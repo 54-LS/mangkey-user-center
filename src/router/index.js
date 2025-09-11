@@ -42,24 +42,26 @@ const router = createRouter({
   routes
 })
 
-// router/index.js 中导航守卫的关键逻辑
+// router/index.js 中导航守卫
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  // 重点检查这里的判断逻辑！
-  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true'
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth) //boolean值判断是否需要验证访问
+  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true' //调用getItem方法，如果存储过isLoggedIn,读取浏览器会话存储中的登录标记，有标记则为true
   
+  //以下用于测试查看当前信息
   console.log('导航守卫检查:', {
     to: to.path,
     requiresAuth,
     isLoggedIn, // 关键：登录后这里是否为 true？
-    token: sessionStorage.getItem('isLoggedIn') // 查看 token 是否存在
+    // token: sessionStorage.getItem('isLoggedIn') // 查看 token 是否存在
   })
   
+  //判断是否该页面需要验证并且未标记
   if (requiresAuth && !isLoggedIn) {
+    //如果是
     sessionStorage.setItem('redirectPath', to.fullPath)
-    next('/login') // 如果登录后这里仍进入，说明 isLoggedIn 为 false
+    next('/login') // 跳转到login登录页面
   } else {
-    next()
+    next()  //如果不是，直接放行
   }
 })
 

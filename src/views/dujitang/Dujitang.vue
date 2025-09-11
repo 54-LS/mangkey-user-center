@@ -7,9 +7,9 @@
                     <li v-for="item in jitangData" :key="item.id" class="words">{{ item }}</li>
                 </ul>
             </div>
-            <a-space wrap>
+
                 <a-button type="primary" @click="getwords">点击获得一句毒鸡汤</a-button>
-            </a-space>
+
         </div>
     </div>
 </template>

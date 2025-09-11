@@ -25,9 +25,8 @@
 
 <script>
 import { message } from 'ant-design-vue';
-import axios from 'axios';
+import { getUserData } from '@/network/login';
 import router from '@/router';
-import { ref } from 'vue';
 
 export default {
   name: 'Login',
@@ -46,54 +45,32 @@ export default {
   },
   methods: {
     async handleLogin() {
+      // 首先验证输入是否为空
+      if (!this.username.trim()) {
+        message.warning('请输入用户名！');
+        return; // 阻止后续请求
+      }
+      if (!this.password.trim()) {
+        message.warning('请输入密码！');
+        return; // 阻止后续请求
+      }
+
        // 2. 发送GET请求到json-server，查询是否有对应用户
       try {
-        const response = await axios.get('http://localhost:3001/users', {
-          params: {
-            username: this.username,
-            password: this.password
-          }
-        });
-    //     // 关键：确认接口返回了 token，且正确存储
-    //     console.log('............',response)
-    // console.log('登录接口返回的 token:', response.data.token) // 检查是否有值
-    // sessionStorage.setItem('token', response.token) // 存储
-    // console.log('存储后的 token:', sessionStorage.getItem('token')) // 检查是否能读取到
-    
-    // const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
-    // console.log('准备跳转:', redirectPath)
-    // router.push(redirectPath)
-    //      // 3. 判断返回的数组是否有一条数据（说明用户存在）
-    //     if (response.data.length === 1) {
-    //       const user = response.data[0].token;
-    //       this.isLoggedIn = true;
-    //       sessionStorage.setItem('isLoggedIn', 'true');
-    //       sessionStorage.setItem('username', user.username);
-    //       sessionStorage.setItem('name', user.name); // 可以存更多信息
-    //       message.success(`欢迎回来，${user.name}！`);
-    //       // // 登录成功，跳转到首页或之前尝试访问的页面
-    //       // const redirect = router.currentRoute.value.query.redirect
-    //       // router.push(redirect)
-    //       // 获取之前记录的路径，如果没有则使用默认路径
-    //       const redirectPath = sessionStorage.getItem('redirectPath') || '/'
-          
-    //       // 清除记录的路径
-    //       sessionStorage.removeItem('redirectPath')
-    //       console.log('当前路径：',redirectPath)
-    //       // // 跳转到目标路径
-    //       router.push(redirectPath)
-    //     } else {
-    //       this.username = '';
-    //       this.password = '';
-    //       message.error('用户名或密码错误！');
-    //     }
-
+        // const response = await axios.get('http://localhost:3001/users', {
+        //   params: {
+        //     username: this.username,
+        //     password: this.password
+        //   }
+        // });
+        const response = await getUserData(this.username,this.password)
+        console.log('response:',response)
     if (response.data.length > 0) {
       // 登录成功：存储状态（关键步骤）
       // 1. 存储登录标识（键名必须与导航守卫中一致）
       sessionStorage.setItem('isLoggedIn', 'true') 
       // 2. 存储用户信息（可选，用于页面显示）
-      sessionStorage.setItem('currentUser', JSON.stringify(response.data[0]))
+      sessionStorage.setItem('currentUser', JSON.stringify(response.data[0])) //JSON.stringify将一个对象转换为json对象
 
       // 打印调试：确认存储成功
       console.log('登录后存储的状态:', {
@@ -101,7 +78,7 @@ export default {
         currentUser: sessionStorage.getItem('currentUser')
       })
       // 获取当前用户信息
-      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
+      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))  //JSON.parse将json转化成js可以直接读取的对象
       console.log('当前用户信息：',currentUser)
       // 跳转逻辑
       const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'

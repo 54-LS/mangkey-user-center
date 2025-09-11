@@ -11,21 +11,25 @@
             <div class="weatherShow">
                 <h2 style="font-family: 'Comic Neue', cursive;">城市：{{ weatherData.city }}</h2>
                 <table align="center" style="background-color: aliceblue;border-radius: 10px;">
-                    <tr>
-                        <th>日期</th>
-                        <th>温度</th>
-                        <th>天气</th>
-                        <th>风向</th>
-                        <th>空气质量</th>
-                    </tr>
-                    <tr v-for="data in weatherData.data" :key="data.id" 
-                    cellspacing="10px">
-                        <td>{{ data.date }}</td>
-                        <td>{{ data.temperature }}</td>
-                        <td>{{ data.weather }}</td>
-                        <td>{{ data.wind }}</td>
-                        <td>{{ data.air_quality }}</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>温度</th>
+                            <th>天气</th>
+                            <th>风向</th>
+                            <th>空气质量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="data in weatherData.data" :key="data.id" 
+                        cellspacing="10px">
+                            <td>{{ data.date }}</td>
+                            <td>{{ data.temperature }}</td>
+                            <td>{{ data.weather }}</td>
+                            <td>{{ data.wind }}</td>
+                            <td>{{ data.air_quality }}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
