@@ -7,14 +7,21 @@
         <div flex="auto" class="menu2">
           <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="menubar" @click="menuClick"/>
         </div>
-        <div flex="100px" class="btn3"><a-button type="primary" @click="clickLogin">登录</a-button></div>
+        <div flex="100px" class="btn3">
+          <div>当前登录用户：{{ userStore.currentUser.username }}</div>
+          <a-button type="primary" @click="clickLogin"  v-if="userStore.currentUser.username == '未登录'">登录</a-button>
+          <a-button type="primary" @click="clickLoginOut"  v-if="userStore.currentUser.username !== '未登录'">退出登录</a-button>
+        </div>
     </div>  
 </template>
 <script setup>
 import { h, ref } from 'vue';
 import { HomeOutlined,TaobaoCircleOutlined } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
 
+
+const userStore = useUserStore()
 //配置路由器
 const router = useRouter();
 //菜单点击触发事件
@@ -26,6 +33,13 @@ const menuClick = ({ item, key, keyPath })=>{
 
 //点击登录按钮,跳转登录页面
 const clickLogin = ()=>{
+  router.push('/login');
+}
+
+// 点击退出登录按钮
+const clickLoginOut = ()=>{
+  const userStore = useUserStore()
+  userStore.logout();
   router.push('/login');
 }
 

@@ -27,6 +27,7 @@
 import { message } from 'ant-design-vue';
 import { getUserData } from '@/network/login';
 import router from '@/router';
+import { useUserStore } from '@/stores/userStore';
 
 export default {
   name: 'Login',
@@ -55,43 +56,65 @@ export default {
         return; // 阻止后续请求
       }
 
-       // 2. 发送GET请求到json-server，查询是否有对应用户
-      try {
-        // const response = await axios.get('http://localhost:3001/users', {
-        //   params: {
-        //     username: this.username,
-        //     password: this.password
-        //   }
-        // });
-        const response = await getUserData(this.username,this.password)
-        console.log('response:',response)
-    if (response.data.length > 0) {
-      // 登录成功：存储状态（关键步骤）
-      // 1. 存储登录标识（键名必须与导航守卫中一致）
-      sessionStorage.setItem('isLoggedIn', 'true') 
-      // 2. 存储用户信息（可选，用于页面显示）
-      sessionStorage.setItem('currentUser', JSON.stringify(response.data[0])) //JSON.stringify将一个对象转换为json对象
+    //    // 2. 发送GET请求到json-server，查询是否有对应用户
+    //   try {
+    //     // const response = await axios.get('http://localhost:3001/users', {
+    //     //   params: {
+    //     //     username: this.username,
+    //     //     password: this.password
+    //     //   }
+    //     // });
+    //     const response = await getUserData(this.username,this.password)
+    //     console.log('response:',response)
+    // if (response.data.length > 0) {
+    //   // 登录成功：存储状态（关键步骤）
+    //   // 1. 存储登录标识（键名必须与导航守卫中一致）
+    //   sessionStorage.setItem('isLoggedIn', 'true') 
+    //   // 2. 存储用户信息（可选，用于页面显示）
+    //   sessionStorage.setItem('currentUser', JSON.stringify(response.data[0])) //JSON.stringify将一个对象转换为json对象
 
-      // 打印调试：确认存储成功
-      console.log('登录后存储的状态:', {
-        isLoggedIn: sessionStorage.getItem('isLoggedIn'),
-        currentUser: sessionStorage.getItem('currentUser')
-      })
-      // 获取当前用户信息
-      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))  //JSON.parse将json转化成js可以直接读取的对象
-      console.log('当前用户信息：',currentUser)
-      // 跳转逻辑
-      const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
-      sessionStorage.removeItem('redirectPath')
-      router.push(redirectPath)
-      message.success(`欢迎回来，${currentUser.name}！`);
-    } else {
-        this.username = '';
-        this.password = '';
-        message.error('用户名或密码错误！');
-    }
+    //   // 打印调试：确认存储成功
+    //   console.log('登录后存储的状态:', {
+    //     isLoggedIn: sessionStorage.getItem('isLoggedIn'),
+    //     currentUser: sessionStorage.getItem('currentUser')
+    //   })
+    //   // 获取当前用户信息
+    //   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))  //JSON.parse将json转化成js可以直接读取的对象
+    //   console.log('当前用户信息：',currentUser)
+    //   // 跳转逻辑
+    //   const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
+    //   sessionStorage.removeItem('redirectPath')
+    //   router.push(redirectPath)
+    //   message.success(`欢迎回来，${currentUser.name}！`);
+    // } else {
+    //     this.username = '';
+    //     this.password = '';
+    //     message.error('用户名或密码错误！');
+    // }
 
-      } catch (error) {
+    //   } 
+
+    try {
+        // 从JSON Server获取用户（模拟后端请求）
+        const response = await getUserData(this.username, this.password)
+        
+        if (response.data.length > 0) {
+          const userInfo = response.data[0] // JSON Server返回的用户数据
+          
+          // 关键：调用Pinia的setUser，存储真实用户
+          const userStore = useUserStore()
+          userStore.setUser(userInfo)
+
+          // 存储登录状态、跳转页面...
+          sessionStorage.setItem('isLoggedIn', 'true')
+          const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
+          router.push(redirectPath)
+          message.success(`欢迎回来，${userInfo.username}！`)
+        } else {
+          message.error('用户名或密码错误！')
+        }
+      } 
+    catch (error) {
         console.error('登录请求失败：', error);
         alert('网络请求失败，请稍后重试');
       }

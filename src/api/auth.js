@@ -9,8 +9,7 @@ export const loginApi =  async (credentials) => {
     if (response.data.length > 0) {
       // 返回用户信息和模拟的token
       return {
-        user: response.data[0],
-        token: '模拟的token'
+        response
       }
     } else {
       throw new Error('用户名或密码错误')
