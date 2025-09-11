@@ -39,7 +39,12 @@ const clickLogin = ()=>{
 // 点击退出登录按钮
 const clickLoginOut = ()=>{
   const userStore = useUserStore()
-  userStore.logout();
+  userStore.clearUser();
+  // 1. 清除登录状态标识（与路由守卫逻辑一致）
+  sessionStorage.removeItem('isLoggedIn');
+  // 2. 清除用户信息（若有存储）
+  sessionStorage.removeItem('currentUser');
+  // 3. 跳转到登录页
   router.push('/login');
 }
 
