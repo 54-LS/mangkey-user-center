@@ -5,6 +5,7 @@ import Dujitang from '@/views/dujitang/Dujitang.vue'
 import Weather from '@/views/weather/Weather.vue'
 import Login from '@/views/login/Login.vue'
 import Register from '@/views/register/Register.vue'
+import Admin from '@/components/Admin.vue'
 
 const routes = [
   {
@@ -40,6 +41,12 @@ const routes = [
     path:'/register',
     name:'register',
     component:Register,
+  },
+  {
+    path:'/admin',
+    name:'admin',
+    component:Admin,
+    meta: { requiresAuth: true }  //需要验证登录的页面
   }
 ]
 

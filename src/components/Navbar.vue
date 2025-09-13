@@ -8,7 +8,7 @@
           <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="menubar" @click="menuClick"/>
         </div>
         <div flex="200px" class="btn3">
-          <div style="margin-right: 10px;">{{ userStore.currentUser.username }}</div>
+          <div style="margin-right: 10px; font-size: 18px;">{{ userStore.currentUser.name }}</div>
           <a-button type="primary" @click="clickLogin"  v-if="userStore.currentUser.username == '未登录'" class="loginbtn">登录</a-button>
           <div v-if="userStore.currentUser.username !== '未登录'">
 
@@ -25,7 +25,7 @@
 </template>
 <script setup>
 import { h, ref } from 'vue';
-import { HomeOutlined,TaobaoCircleOutlined } from '@ant-design/icons-vue';
+import { HomeOutlined,TaobaoCircleOutlined,UserDeleteOutlined } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 
@@ -71,7 +71,7 @@ const items = ref([
     key: '/',
     icon: () => h(HomeOutlined),
     label: '首页',
-    title: 'home',
+    title: '首页，不用登录',
   },
   {
     key: '/dujitang',
@@ -80,7 +80,7 @@ const items = ref([
       style:"width:15px;height:15px;"
     }),
     label: '毒鸡汤',
-    title: 'dujitang',
+    title: '每日一言',
   },
   {
     key: '/hottop',
@@ -89,7 +89,7 @@ const items = ref([
       style:"width:15px;height:15px;"
     }),
     label: '热搜',
-    title: 'hottop',
+    title: '微博热搜',
   },
   {
     key: 'taobao',
@@ -102,8 +102,14 @@ const items = ref([
       },
       '淘宝',
     ),
-    title: '淘宝',
+    title: '点击跳转淘宝',
   },
+   {
+    key: '/admin',
+    icon:()=>h(UserDeleteOutlined),
+    label: '用户管理',
+    title: '只有管理员才能访问哟',
+  }
 ]);
 </script>
 
