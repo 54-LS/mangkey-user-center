@@ -4,6 +4,7 @@ import HotTop from '@/views/hottop/HotTop.vue'
 import Dujitang from '@/views/dujitang/Dujitang.vue'
 import Weather from '@/views/weather/Weather.vue'
 import Login from '@/views/login/Login.vue'
+import Register from '@/views/register/Register.vue'
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     name:'login',
     component:Login,
 
+  },
+  {
+    path:'/register',
+    name:'register',
+    component:Register,
   }
 ]
 

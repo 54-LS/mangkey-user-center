@@ -3,17 +3,32 @@
     {
       "username": "admin",
       "password": "123456",
-      "name": "管理员"
+      "name": "管理员",
+      "id": "8195"
     },
     {
       "username": "zhangsan",
       "password": "1002",
-      "name": "张三"
+      "name": "张三",
+      "id": "b8e4"
     },
     {
       "username": "lisi",
       "password": "1002",
-      "name": "李四"
+      "name": "李四",
+      "id": "1662"
+    },
+    {
+      "id": "d651",
+      "name": "王五",
+      "username": "wu",
+      "password": "1234"
+    },
+    {
+      "id": "2db3",
+      "name": "王五",
+      "username": "wu",
+      "password": "111"
     }
   ]
 }

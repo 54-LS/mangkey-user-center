@@ -19,9 +19,10 @@ export const useUserStore = defineStore('user', () => {
     sessionStorage.removeItem('currentUser')
   }
 
+
   return {
     currentUser, // 全局可访问的用户信息（未登录时为 { username: '未登录' }）
     setUser,     // 登录成功时调用，存储真实用户
-    clearUser    // 登出时调用，重置为未登录
+    clearUser,    // 登出时调用，重置为未登录
   }
 })

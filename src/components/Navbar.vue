@@ -1,16 +1,25 @@
 <template>
     <div id="navbar">
         <div flex="20px" class="logo1">
-          <img src="@/assets/logo.png" style="height: 50px;border-radius: 20px;">
+          <img src="@/assets/logo.png" style="height: 50px;border-radius: 20px; margin-top: 10px;">
           <p>忙key用户中心</p>
         </div>
         <div flex="auto" class="menu2">
           <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="menubar" @click="menuClick"/>
         </div>
-        <div flex="100px" class="btn3">
-          <div>当前登录用户：{{ userStore.currentUser.username }}</div>
-          <a-button type="primary" @click="clickLogin"  v-if="userStore.currentUser.username == '未登录'">登录</a-button>
-          <a-button type="primary" @click="clickLoginOut"  v-if="userStore.currentUser.username !== '未登录'">退出登录</a-button>
+        <div flex="200px" class="btn3">
+          <div style="margin-right: 10px;">{{ userStore.currentUser.username }}</div>
+          <a-button type="primary" @click="clickLogin"  v-if="userStore.currentUser.username == '未登录'" class="loginbtn">登录</a-button>
+          <div v-if="userStore.currentUser.username !== '未登录'">
+
+                  <a-popover>
+                    <template #content>
+                      <a-button danger @click="clickLoginOut">退出登录</a-button>
+                    </template>
+                    <a-button type="primary"  class="loginbtn">设置</a-button>
+                  </a-popover>
+
+          </div>
         </div>
     </div>  
 </template>
@@ -124,5 +133,10 @@ const items = ref([
 }
 .btn3{
   flex: 1;
+  display: flex;
+  justify-content: space-between
+}
+.btn3 .loginbtn{
+  margin-top: 15px;
 }
 </style>

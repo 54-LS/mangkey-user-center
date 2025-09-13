@@ -1,29 +1,13 @@
 <template>
-  <div class="login">
-    <div class="loginform">
-        <h2 class="login-title">登录</h2>
-        
-        <form @submit.prevent="handleLogin">
-        <input type="text" v-model="username" placeholder="用户名" class="form-input"/>
-        <input type="password" v-model="password" placeholder="密码" class="form-input"/>
-        <button type="submit" class="login-btn">登录</button>
-        <div class="login-bottom">
-            <div class="no-account">
-                <router-link to="/register">没有账号？去注册</router-link>
-            </div>
-            <div class="forgot-password">
-                <a-popconfirm
-                    title="你确定忘记密码了吗?"
-                    cancel-text="记得"
-                    ok-text="确定"
-                    @cancel="cancel"
-                    @confirm="confirm"
-                >
-                    <a href="#">忘记密码?</a>
-                </a-popconfirm>
-            </div>
-        </div>
-        
+  <div class="register">
+    <div class="registerform">
+        <h2 class="register-title">注册</h2>   
+        <form @submit.prevent="handleRegister">
+            <input type="text" v-model="name" placeholder="姓名" class="form-input"/>
+            <input type="text" v-model="username" placeholder="用户名" class="form-input"/>
+            <input type="password" v-model="password" placeholder="密码" class="form-input"/>
+            <input type="password" v-model="passwordConfirm" placeholder="确认密码" class="form-input"/>
+            <button type="submit" class="register-btn">注册</button>
         </form>
     </div>
   </div>
@@ -31,27 +15,22 @@
 
 <script>
 import { message } from 'ant-design-vue';
+import { registerUser } from '@/network/register';
 import { getUserData } from '@/network/login';
 import router from '@/router';
-import { useUserStore } from '@/stores/userStore';
 
 export default {
-  name: 'Login',
+  name: 'Register',
   data() {
     return {
+      name: '',
       username: '',
       password: '',
-      isLoggedIn: false,
-    }
-  },
-  // 页面加载时检查是否已经登录过
-  created() {
-    if (sessionStorage.getItem('isLoggedIn') === 'true') {
-      this.isLoggedIn = true;
+      passwordConfirm: '',
     }
   },
   methods: {
-    async handleLogin() {
+    async handleRegister() {
       // 首先验证输入是否为空
       if (!this.username.trim()) {
         message.warning('请输入用户名！');
@@ -61,37 +40,37 @@ export default {
         message.warning('请输入密码！');
         return; // 阻止后续请求
       }
+      if (!this.passwordConfirm.trim()) {
+        message.warning('请确认密码！');
+        return; // 阻止后续请求
+      }
+      if (!this.name.trim()) {
+        message.warning('请输入姓名！');
+        return; // 阻止后续请求
+      }
+      if (this.password!=this.passwordConfirm){
+        message.warning('两次密码不一致');
+        return; // 阻止后续请求
+      }
 
     try {
         // 从JSON Server获取用户（模拟后端请求）
         const response = await getUserData(this.username, this.password)
         
-        if (response.data.length > 0) {
-          const userInfo = response.data[0] // JSON Server返回的用户数据
-          
-          // 关键：调用Pinia的setUser，存储真实用户
-          const userStore = useUserStore()
-          userStore.setUser(userInfo)
-
-          // 存储登录状态、跳转页面...
-          sessionStorage.setItem('isLoggedIn', 'true')
-          const redirectPath = sessionStorage.getItem('redirectPath') || '/dujitang'
-          router.push(redirectPath)
-          message.success(`欢迎回来，${userInfo.name}！`)
-        } else {
-          message.error('用户名或密码错误！')
+        if(response.data.length>0){
+            message.error('该用户已存在，请更换用户名！');
+            return; // 阻止后续请求
+        }
+        else{
+            await registerUser(this.name,this.username,this.password)
+            message.success('注册成功！');
+            router.push('/login');
         }
       } 
     catch (error) {
         console.error('登录请求失败：', error);
         alert('网络请求失败，请稍后重试');
       }
-    },
-    confirm(){
-        message.info('我咋知道你密码');
-    },
-    cancel(){
-        message.error('记得还点啥');
     }
   }
 }
@@ -99,7 +78,7 @@ export default {
 
 <style scoped>
     /* 基本的页面样式 */
-    .login {
+    .register {
         font-family: 'Arial', sans-serif;
         background-color: #f5f5f5; /* 背景为浅灰色 */
         display: flex;
@@ -110,7 +89,7 @@ export default {
     }
 
     /* 表单样式 */
-    .loginform {
+    .registerform {
         background-color: white;
         padding: 30px;
         border-radius: 10px;
@@ -118,7 +97,7 @@ export default {
         width: 300px;
     }
 
-    .login-title {
+    .register-title {
         text-align: center;
         margin-bottom: 20px;
         color: #333;
@@ -142,7 +121,7 @@ export default {
     }
 
     /* 按钮样式 */
-    .login-btn {
+    .register-btn {
         width: 100%;
         padding: 12px;
         background: linear-gradient(135deg, #4a90e2, #3273dc);
@@ -177,13 +156,5 @@ export default {
 
     .forgot-password a:hover {
         text-decoration: underline;
-    }
-    .no-account {
-        text-align: left;
-        margin-top: 15px;
-    }
-    .login-bottom {
-        display: flex;
-        justify-content: space-between;
     }
 </style>
